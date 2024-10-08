@@ -90,6 +90,16 @@ app.post('/api/authenticate-face', (req, res) => {
   }
 });
 
+// Ruta para obtener el listado de todos los datos faciales almacenados
+app.get('/api/face-data', (req, res) => {
+    try {
+        const faceData = readDataFromFile(); // Leer los datos del archivo JSON
+        res.status(200).json(faceData); // Enviar el listado de datos faciales como respuesta
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener los datos faciales' });
+    }
+});
+
 // Función para calcular la distancia euclidiana
 const calculateEuclideanDistance = (points1, points2) => {
   let sum = 0;
