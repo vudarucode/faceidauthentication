@@ -117,7 +117,7 @@ app.post('/api/authenticate-face', (req, res) => {
     const distance = calculateEuclideanDistance(storedLandmarks, newLandmarks);
 
     // Definir un umbral de distancia para autenticación exitosa
-    const threshold = 0.5;
+    const threshold = 1.0;
     if (distance < threshold) {
       return res.status(200).json({ message: 'Autenticación exitosa' });
     } else {
