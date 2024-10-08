@@ -56,6 +56,44 @@ app.post('/api/register-face', (req, res) => {
   }
 });
 
+// Ruta para obtener el listado de todos los datos faciales almacenados
+app.get('/api/face-data', (req, res) => {
+    try {
+        const faceData = readDataFromFile(); // Leer los datos del archivo JSON
+        res.status(200).json(faceData); // Enviar el listado de datos faciales como respuesta
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener los datos faciales' });
+    }
+});
+
+// Ruta para actualizar los datos faciales de un usuario
+app.put('/api/update-face/:userId', (req, res) => {
+    const { userId } = req.params;
+    const { faceData } = req.body;
+  
+    try {
+      // Leer los datos existentes
+      const existingData = readDataFromFile();
+  
+      // Buscar el usuario en los datos almacenados
+      const userIndex = existingData.findIndex((item) => item.userId === userId);
+  
+      if (userIndex === -1) {
+        return res.status(404).json({ message: 'Usuario no encontrado' });
+      }
+  
+      // Actualizar los datos faciales del usuario
+      existingData[userIndex].faceData = faceData;
+  
+      // Guardar los datos actualizados en el archivo JSON
+      writeDataToFile(existingData);
+  
+      res.status(200).json({ message: 'Datos faciales actualizados correctamente.' });
+    } catch (error) {
+      res.status(500).json({ error: 'Error al actualizar los datos faciales' });
+    }
+});
+
 // Ruta para autenticar al usuario usando los datos faciales
 app.post('/api/authenticate-face', (req, res) => {
   const { userId, faceData } = req.body;
@@ -88,16 +126,6 @@ app.post('/api/authenticate-face', (req, res) => {
   } catch (error) {
     res.status(500).json({ error: 'Error durante la autenticación facial' });
   }
-});
-
-// Ruta para obtener el listado de todos los datos faciales almacenados
-app.get('/api/face-data', (req, res) => {
-    try {
-        const faceData = readDataFromFile(); // Leer los datos del archivo JSON
-        res.status(200).json(faceData); // Enviar el listado de datos faciales como respuesta
-    } catch (error) {
-        res.status(500).json({ error: 'Error al obtener los datos faciales' });
-    }
 });
 
 // Función para calcular la distancia euclidiana
